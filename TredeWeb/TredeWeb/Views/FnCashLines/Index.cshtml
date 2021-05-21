@@ -1,0 +1,68 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+
+@(Html.DevExtreme().DataGrid<TredeWeb.DataLayer.FnCashFiches>()
+    .DataSource(ds => ds.Mvc()
+        .Controller("ApiFnCashFiches")
+        .LoadAction("Get")
+        .InsertAction("Post")
+        .UpdateAction("Put")
+        .DeleteAction("Delete")
+        .Key("Id")
+    )
+    .RemoteOperations(true)
+    .Columns(columns => {
+
+
+        columns.AddFor(m => m.FinanceRef).Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi().Controller("ApiFnCashFiches").LoadAction("FnFichesLookup").Key("Value"))
+            .ValueExpr("Value")
+            .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.Owner).Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi().Controller("ApiFnCashFiches").LoadAction("UsersLookup").Key("Value"))
+            .ValueExpr("Value")
+            .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.Type);
+
+        columns.AddFor(m => m.Number);
+
+        columns.AddFor(m => m.FicheDate);
+
+        columns.AddFor(m => m.IsApproved);
+
+        columns.AddFor(m => m.ApproveDate);
+
+        columns.AddFor(m => m.ReceiptDate);
+
+        columns.AddFor(m => m.ReceiptNo);
+
+        columns.AddFor(m => m.Description);
+
+        columns.AddFor(m => m.CardRef).Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi().Controller("ApiFnCashFiches").LoadAction("CashCardsLookup").Key("Value"))
+            .ValueExpr("Value")
+            .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.IsActive);
+
+        columns.AddFor(m => m.CreateDate);
+
+        columns.AddFor(m => m.FicheTotal);
+    })
+    .Editing(e => e
+        .AllowAdding(true)
+        .AllowUpdating(true)
+        .AllowDeleting(true)
+    )
+)

@@ -1,0 +1,137 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    function onShowing(e) {
+        var btns = e.component.content().parent().find(".dx-button.dx-button-has-text");
+        for (var i = 0; i < btns.length; i++) {
+            var btn = btns[i];
+            $(btn).dxButton("option", "text", i == 0 ? "Kaydet" : "Vazgeç");
+        }
+    }
+</script>
+@(Html.DevExtreme().DataGrid<TredeWeb.DataLayer.Items>
+    ()
+    .DataSource(ds => ds.Mvc()
+    .Controller("ApiItems")
+    .LoadAction("Get")
+    .InsertAction("Post")
+    .UpdateAction("Put")
+    .DeleteAction("Delete")
+    .Key("Id")
+    )
+    .ShowBorders(true)
+    .ShowColumnLines(true)
+    .HighlightChanges(true)
+    .Paging(pagination => pagination
+    .Enabled(true)
+    .PageSize(5)
+    )
+    .RemoteOperations(true)
+    .Editing(e => e
+    .Mode(GridEditMode.Popup)
+    .Popup(pop => pop
+    .DragEnabled(false)
+    .OnShowing("onShowing")
+    .Position(PositionAlignment.Center)
+    .Width(700)
+    .Height(800)
+    .Title("Öğeler Formu").ShowTitle(true).ShowCloseButton(true).CloseOnOutsideClick(true)
+    )
+    .Form(cnfg =>
+    {
+    cnfg.Items(itm => itm
+    .AddGroup()
+    .ColCount(2)
+    .ColSpan(2)
+    .Caption("İlk grup")
+    .Items(groupItems =>
+    {
+    groupItems.AddSimpleFor(m => m.Code);
+    groupItems.AddSimpleFor(m => m.Name);
+    groupItems.AddSimpleFor(m => m.StockAmount);
+    groupItems.AddSimpleFor(m => m.Description);
+    groupItems.AddSimpleFor(m => m.IsCampaignItem);
+    groupItems.AddSimpleFor(m => m.IsCategoryItem);
+    groupItems.AddSimpleFor(m => m.IsDiscounted);
+    groupItems.AddSimpleFor(m => m.IsMainItem);
+    groupItems.AddSimpleFor(m => m.IsWebItem);
+    groupItems.AddSimpleFor(m => m.IsDealer);
+    groupItems.AddSimpleFor(m => m.IsQuickDelivery);
+
+    }));
+    cnfg.Items(itm => itm
+    .AddGroup()
+    .ColCount(2)
+    .ColSpan(2)
+    .Caption("İkinci grup")
+    .Items(groupItems =>
+    {
+    groupItems.AddSimpleFor(m => m.IsNewSeason);
+    groupItems.AddSimpleFor(m => m.IsStockTracking);
+    groupItems.AddSimpleFor(m => m.Mark);
+    groupItems.AddSimpleFor(m => m.ModifiedDate);
+    groupItems.AddSimpleFor(m => m.ModifiedUser);
+    groupItems.AddSimpleFor(m => m.Owner);
+    groupItems.AddSimpleFor(m => m.Specode);
+    groupItems.AddSimpleFor(m => m.Type);
+    groupItems.AddSimpleFor(m => m.IsActive);
+    groupItems.AddSimpleFor(m => m.CreatedDate);
+    }));
+    cnfg.ShowValidationSummary(true);
+    })
+    .UseIcons(true)
+    .ConfirmDelete(true)
+    .AllowAdding(true)
+    .AllowUpdating(true)
+    .AllowDeleting(true)
+    )
+    .Columns(columns => {
+    columns.AddFor(m => m.Code).Caption("Kodu");
+
+    columns.AddFor(m => m.Name).Caption("Ad");
+
+    columns.AddFor(m => m.StockAmount).Caption("Stok Miktarı");
+
+    columns.AddFor(m => m.Description).Caption("Açıklama");
+
+    columns.AddFor(m => m.IsCampaignItem).Caption("Kampanya Öğesi mi");
+
+    columns.AddFor(m => m.IsCategoryItem).Caption("Kategori Öğesi mi");
+
+    columns.AddFor(m => m.IsDiscounted).Caption("İndirimli");
+
+    columns.AddFor(m => m.IsMainItem).Caption("Ana Öğe");
+
+    columns.AddFor(m => m.IsWebItem).Caption("Web Öğesidir");
+
+    columns.AddFor(m => m.IsDealer).Caption("Bayi");
+
+    columns.AddFor(m => m.IsQuickDelivery).Caption("Hızlı Teslimat");
+
+    columns.AddFor(m => m.IsNewSeason).Caption("Yeni Sezon");
+
+    columns.AddFor(m => m.IsStockTracking).Caption("Stok Takibi");
+
+    columns.AddFor(m => m.Mark).Caption("işaret").Lookup(lookup => lookup
+    .DataSource(ds => ds.WebApi().Controller("ApiItems").LoadAction("MarksLookup").Key("Value"))
+    .ValueExpr("Value")
+    .DisplayExpr("Text")
+    );
+
+    columns.AddFor(m => m.ModifiedDate).Caption("Değiştirilme Tarihi");
+
+    columns.AddFor(m => m.ModifiedUser).Caption("Değiştirilmiş Kullanıcı");
+
+    columns.AddFor(m => m.Owner).Caption("Sahip");
+
+    columns.AddFor(m => m.Specode).Caption("Spe Kod");
+
+    columns.AddFor(m => m.Type).Caption("Tipi");
+
+    columns.AddFor(m => m.IsActive).Caption("Aktif Mi");
+
+    columns.AddFor(m => m.CreatedDate).Caption("Oluşturma Tahiri");
+    }))

@@ -1,0 +1,166 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    function onShowing(e) {
+        var btns = e.component.content().parent().find(".dx-button.dx-button-has-text");
+        for (var i = 0; i < btns.length; i++) {
+            var btn = btns[i];
+            $(btn).dxButton("option", "text", i == 0 ? "Kaydet" : "Vazgeç");
+        }
+    }
+</script>
+@(Html.DevExtreme().DataGrid<TredeWeb.DataLayer.Users>
+    ()
+    .DataSource(ds => ds.Mvc()
+    .Controller("ApiUsers")
+    .LoadAction("Get")
+    .InsertAction("Post")
+    .UpdateAction("Put")
+    .DeleteAction("Delete")
+    .Key("Id")
+    )
+    .ShowBorders(true)
+            .ShowColumnLines(true)
+            .HighlightChanges(true)
+            .Paging(pagination => pagination
+                .Enabled(true)
+                .PageSize(5)
+            )
+            .RemoteOperations(true)
+            .Editing(e => e
+                .Mode(GridEditMode.Popup)
+                    .Popup(pop => pop
+                        .DragEnabled(false)
+                        .OnShowing("onShowing")
+                        .Position(PositionAlignment.Center)
+                        .Width(700)
+                        .Height(800)
+                        .Title("Kullanıcılar Formu").ShowTitle(true).ShowCloseButton(true).CloseOnOutsideClick(true)
+                        )
+                .Form(cnfg =>
+                {
+                    cnfg.Items(itm => itm
+                        .AddGroup()
+                        .ColCount(2)
+                        .ColSpan(2)
+                        .Caption("İlk grup")
+                        .Items(groupItems =>
+                        {
+                            groupItems.AddSimpleFor(m => m.UserName);
+                            groupItems.AddSimpleFor(m => m.ChangePasswordOnFirstLogon);
+                            groupItems.AddSimpleFor(m => m.StoredPassword);
+                            groupItems.AddSimpleFor(m => m.UserCurrencyType);
+                            groupItems.AddSimpleFor(m => m.Department);
+                            groupItems.AddSimpleFor(m => m.Position);
+                            groupItems.AddSimpleFor(m => m.Location);
+                            groupItems.AddSimpleFor(m => m.BirthDay);
+                            groupItems.AddSimpleFor(m => m.Email);
+
+                        }));
+                    cnfg.Items(itm => itm
+                        .AddGroup()
+                        .ColCount(2)
+                        .ColSpan(2)
+                        .Caption("İkinci grup")
+                        .Items(groupItems =>
+                        {
+                            groupItems.AddSimpleFor(m => m.FirstName);
+                            groupItems.AddSimpleFor(m => m.MiddleName);
+                            groupItems.AddSimpleFor(m => m.LastName);
+                            groupItems.AddSimpleFor(m => m.Title);
+                            groupItems.AddSimpleFor(m => m.AccountRef);
+                            groupItems.AddSimpleFor(m => m.UserImage);
+                            groupItems.AddSimpleFor(m => m.OwnerRef);
+                            groupItems.AddSimpleFor(m => m.Addresses);
+                            groupItems.AddSimpleFor(m => m.PhoneNumber);
+                            groupItems.AddSimpleFor(m => m.TaxNr);
+                            groupItems.AddSimpleFor(m => m.TaxOffice);
+                            groupItems.AddSimpleFor(m => m.Tckno);
+                            groupItems.AddSimpleFor(m => m.MobileNumber);
+                            groupItems.AddSimpleFor(m => m.IsActive);
+                            groupItems.AddSimpleFor(m => m.CreatedDate);
+                        }));
+                    cnfg.ShowValidationSummary(true);
+                })
+                .UseIcons(true)
+                .ConfirmDelete(true)
+                .AllowAdding(true)
+                .AllowUpdating(true)
+                .AllowDeleting(true)
+            )
+    .Columns(columns => {
+        columns.AddFor(m => m.UserName).Caption("Kullanıcı Adı");
+
+        columns.AddFor(m => m.ChangePasswordOnFirstLogon).Caption("Parolayı Girin");
+
+        columns.AddFor(m => m.StoredPassword).Caption("Tekrar Parolayı Girin");
+
+        columns.AddFor(m => m.UserCurrencyType).Caption("Kullanıcı Para Birimi Türü").Lookup(lookup => lookup
+        .DataSource(ds => ds.WebApi().Controller("ApiUsers").LoadAction("CurrenciesLookup").Key("Value"))
+        .ValueExpr("Value")
+        .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.Department).Caption("Departman").Lookup(lookup => lookup
+        .DataSource(ds => ds.WebApi().Controller("ApiUsers").LoadAction("DepartmentsLookup").Key("Value"))
+        .ValueExpr("Value")
+        .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.Position).Caption("Durum").Lookup(lookup => lookup
+        .DataSource(ds => ds.WebApi().Controller("ApiUsers").LoadAction("PositionsLookup").Key("Value"))
+        .ValueExpr("Value")
+        .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.Location).Caption("Yer");
+
+        columns.AddFor(m => m.BirthDay).Caption("Doğum günü");
+
+        columns.AddFor(m => m.Email).Caption("Email");
+
+        columns.AddFor(m => m.FirstName).Caption("İsim");
+
+        columns.AddFor(m => m.MiddleName).Caption("İkinci ad");
+
+        columns.AddFor(m => m.LastName).Caption("Soy İsmi");
+
+        columns.AddFor(m => m.Title).Caption("Başlık");
+
+        columns.AddFor(m => m.AccountRef).Caption("Hesap Referansı").Lookup(lookup => lookup
+        .DataSource(ds => ds.WebApi().Controller("ApiUsers").LoadAction("AccountsLookup").Key("Value"))
+        .ValueExpr("Value")
+        .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.UserImage).Caption("Kullanıcı Resmi");
+
+        columns.AddFor(m => m.OwnerRef).Caption("Sahip").Lookup(lookup => lookup
+        .DataSource(ds => ds.WebApi().Controller("ApiUsers").LoadAction("UsersLookup").Key("Value"))
+        .ValueExpr("Value")
+        .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.AddressRef).Caption("Adres").Lookup(lookup => lookup
+        .DataSource(ds => ds.WebApi().Controller("ApiUsers").LoadAction("AddressesLookup").Key("Value"))
+        .ValueExpr("Value")
+        .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.PhoneNumber).Caption("Sabit Telefon");
+
+        columns.AddFor(m => m.TaxNr).Caption("Vergi No");
+
+        columns.AddFor(m => m.TaxOffice).Caption("Vergi Dairesi");
+
+        columns.AddFor(m => m.Tckno).Caption("Tc No");
+
+        columns.AddFor(m => m.MobileNumber).Caption("Cep Telefonu");
+
+        columns.AddFor(m => m.IsActive).Caption("Aktif Mi");
+
+        columns.AddFor(m => m.CreatedDate).Caption("Oluşturma Tahiri");
+    }))

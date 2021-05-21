@@ -1,0 +1,108 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@(Html.DevExtreme().DataGrid<TredeWeb.DataLayer.InventoryLines>()
+    .DataSource(ds => ds.Mvc()
+        .Controller("ApiInventoryLines")
+        .LoadAction("Get")
+        .InsertAction("Post")
+        .UpdateAction("Put")
+        .DeleteAction("Delete")
+        .Key("Id")
+    )
+    .RemoteOperations(true)
+    .Columns(columns => {
+
+        columns.AddFor(m => m.Id);
+
+        columns.AddFor(m => m.StockFicheRef).Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi().Controller("ApiInventoryLines").LoadAction("InventoriesLookup").Key("Value"))
+            .ValueExpr("Value")
+            .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.IsChange);
+
+        columns.AddFor(m => m.LineGuid);
+
+        columns.AddFor(m => m.OwnerRef).Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi().Controller("ApiInventoryLines").LoadAction("UsersLookup").Key("Value"))
+            .ValueExpr("Value")
+            .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.AccountRef).Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi().Controller("ApiInventoryLines").LoadAction("AccountsLookup").Key("Value"))
+            .ValueExpr("Value")
+            .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.Amount);
+
+        columns.AddFor(m => m.DiscountType);
+
+        columns.AddFor(m => m.DiscountValue);
+
+        columns.AddFor(m => m.IsCancelled);
+
+        columns.AddFor(m => m.IsDiscounted);
+
+        columns.AddFor(m => m.ItemRef).Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi().Controller("ApiInventoryLines").LoadAction("ItemsLookup").Key("Value"))
+            .ValueExpr("Value")
+            .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.ModifiedDate);
+
+        columns.AddFor(m => m.ModifiedUser);
+
+        columns.AddFor(m => m.MoveType);
+
+        columns.AddFor(m => m.Price);
+
+        columns.AddFor(m => m.SalesmanRef);
+
+        columns.AddFor(m => m.Tax);
+
+        columns.AddFor(m => m.LineNr);
+
+        columns.AddFor(m => m.CostTax1);
+
+        columns.AddFor(m => m.CostTax2);
+
+        columns.AddFor(m => m.CostTax3);
+
+        columns.AddFor(m => m.CurrencyRef).Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi().Controller("ApiInventoryLines").LoadAction("CurrenciesLookup").Key("Value"))
+            .ValueExpr("Value")
+            .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.MinimumStockLevel);
+
+        columns.AddFor(m => m.IsActive);
+
+        columns.AddFor(m => m.CreatedDate);
+
+        columns.AddFor(m => m.UnitRef).Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi().Controller("ApiInventoryLines").LoadAction("UnitsLookup").Key("Value"))
+            .ValueExpr("Value")
+            .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.UnitLineRef).Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi().Controller("ApiInventoryLines").LoadAction("UnitLinesLookup").Key("Value"))
+            .ValueExpr("Value")
+            .DisplayExpr("Text")
+        );
+    })
+    .Editing(e => e
+        .AllowAdding(true)
+        .AllowUpdating(true)
+        .AllowDeleting(true)
+    )
+)

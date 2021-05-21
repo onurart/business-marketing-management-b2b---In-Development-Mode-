@@ -1,0 +1,127 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    function onShowing(e) {
+        var btns = e.component.content().parent().find(".dx-button.dx-button-has-text");
+        for (var i = 0; i < btns.length; i++) {
+            var btn = btns[i];
+            $(btn).dxButton("option", "text", i == 0 ? "Kaydet" : "Vazgeç");
+        }
+    }
+</script>
+@(Html.DevExtreme().DataGrid<TredeWeb.DataLayer.FnCashFiches>
+    ()
+    .DataSource(ds => ds.Mvc()
+    .Controller("ApiFnCashFiche")
+    .LoadAction("Get")
+    .InsertAction("Post")
+    .UpdateAction("Put")
+    .Key("Id")
+    )
+    .ShowBorders(true)
+            .ShowColumnLines(true)
+            .HighlightChanges(true)
+            .Paging(pagination => pagination
+                .Enabled(true)
+                .PageSize(5)
+            )
+            .RemoteOperations(true)
+            .Editing(e => e
+                .Mode(GridEditMode.Popup)
+                    .Popup(pop => pop
+                        .DragEnabled(false)
+                        .OnShowing("onShowing")
+                        .Position(PositionAlignment.Center)
+                        .Width(700)
+                        .Height(800)
+                        .Title("Şehir Formu").ShowTitle(true).ShowCloseButton(true).CloseOnOutsideClick(true)
+                        )
+                .Form(cnfg =>
+                {
+                    cnfg.Items(itm => itm
+                        .AddGroup()
+                        .ColCount(2)
+                        .ColSpan(2)
+                        .Caption("İlk grup")
+                        .Items(groupItems =>
+                        {
+                            groupItems.AddSimpleFor(m => m.FinanceRef);
+                            groupItems.AddSimpleFor(m => m.Owner);
+                            groupItems.AddSimpleFor(m => m.Type);
+                            groupItems.AddSimpleFor(m => m.Number);
+                            groupItems.AddSimpleFor(m => m.FicheDate);
+                            groupItems.AddSimpleFor(m => m.IsApproved);
+
+                        }));
+                    cnfg.Items(itm => itm
+                        .AddGroup()
+                        .ColCount(2)
+                        .ColSpan(2)
+                        .Caption("İkinci grup")
+                        .Items(groupItems =>
+                        {
+                            groupItems.AddSimpleFor(m => m.ApproveDate);
+                            groupItems.AddSimpleFor(m => m.ReceiptDate);
+                            groupItems.AddSimpleFor(m => m.ReceiptNo);
+                            groupItems.AddSimpleFor(m => m.Description);
+                            groupItems.AddSimpleFor(m => m.CardRef);
+                            groupItems.AddSimpleFor(m => m.IsActive);
+                            groupItems.AddSimpleFor(m => m.CreateDate);
+                            groupItems.AddSimpleFor(m => m.FicheTotal);
+
+                        }));
+                    cnfg.ShowValidationSummary(true);
+                })
+                .UseIcons(true)
+                .ConfirmDelete(true)
+                .AllowAdding(true)
+                .AllowUpdating(true)
+                .AllowDeleting(true)
+            )
+    .Columns(columns => {
+
+
+
+        columns.AddFor(m => m.FinanceRef).Caption("Finans Ref").Lookup(lookup => lookup
+        .DataSource(ds => ds.WebApi().Controller("ApiFnCashFiche").LoadAction("FnFichesLookup").Key("Value"))
+        .ValueExpr("Value")
+        .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.Owner).Caption("Sahip").Lookup(lookup => lookup
+        .DataSource(ds => ds.WebApi().Controller("ApiFnCashFiche").LoadAction("UsersLookup").Key("Value"))
+        .ValueExpr("Value")
+        .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.Type).Caption("Tipi");
+
+        columns.AddFor(m => m.Number).Caption("Numara");
+
+        columns.AddFor(m => m.FicheDate).Caption("Fiş Tarihi");
+
+        columns.AddFor(m => m.IsApproved);
+
+        columns.AddFor(m => m.ApproveDate).Caption("Onaylandı");
+
+        columns.AddFor(m => m.ReceiptDate).Caption("Makbuz Tarihi");
+
+        columns.AddFor(m => m.ReceiptNo).Caption("Makbuz: Hayır");
+
+        columns.AddFor(m => m.Description).Caption("Açiklama");
+
+        columns.AddFor(m => m.CardRef).Caption("Kart Referansı").Lookup(lookup => lookup
+        .DataSource(ds => ds.WebApi().Controller("ApiFnCashFiche").LoadAction("CashCardsLookup").Key("Value"))
+        .ValueExpr("Value")
+        .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.IsActive).Caption("Aktif Mi");
+
+        columns.AddFor(m => m.CreateDate).Caption("Oluşturma Tarihi");
+
+        columns.AddFor(m => m.FicheTotal).Caption("FişToplam");
+    }))

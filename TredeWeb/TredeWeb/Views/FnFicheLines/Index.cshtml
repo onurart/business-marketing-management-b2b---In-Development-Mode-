@@ -1,0 +1,109 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@(Html.DevExtreme().DataGrid<TredeWeb.DataLayer.FnFicheLines>()
+    .DataSource(ds => ds.Mvc()
+        .Controller("ApiFnFicheLines")
+        .LoadAction("Get")
+        .InsertAction("Post")
+        .UpdateAction("Put")
+        .DeleteAction("Delete")
+        .Key("Id")
+    )
+    .RemoteOperations(true)
+    .Columns(columns => {
+
+           columns.AddFor(m => m.Collect);
+
+        columns.AddFor(m => m.ModifiedDate);
+
+        columns.AddFor(m => m.ModifiedUser);
+
+        columns.AddFor(m => m.Currency).Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi().Controller("ApiFnFicheLines").LoadAction("CurrenciesLookup").Key("Value"))
+            .ValueExpr("Value")
+            .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.LineNr);
+
+        columns.AddFor(m => m.FinanceRef).Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi().Controller("ApiFnFicheLines").LoadAction("FnFichesLookup").Key("Value"))
+            .ValueExpr("Value")
+            .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.Amount);
+
+        columns.AddFor(m => m.Tax);
+
+        columns.AddFor(m => m.VatBase);
+
+        columns.AddFor(m => m.Total);
+
+        columns.AddFor(m => m.BankRef).Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi().Controller("ApiFnFicheLines").LoadAction("FnBankLinesLookup").Key("Value"))
+            .ValueExpr("Value")
+            .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.BarterRef).Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi().Controller("ApiFnFicheLines").LoadAction("FnBarterLinesLookup").Key("Value"))
+            .ValueExpr("Value")
+            .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.CsRef);
+
+        columns.AddFor(m => m.CashRef).Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi().Controller("ApiFnFicheLines").LoadAction("FnCashLinesLookup").Key("Value"))
+            .ValueExpr("Value")
+            .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.CreditCardRef);
+
+        columns.AddFor(m => m.Sign);
+
+        columns.AddFor(m => m.ModulEnr);
+
+        columns.AddFor(m => m.AccountRef).Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi().Controller("ApiFnFicheLines").LoadAction("AccountsLookup").Key("Value"))
+            .ValueExpr("Value")
+            .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.Cost);
+
+        columns.AddFor(m => m.CardRef).Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi().Controller("ApiFnFicheLines").LoadAction("CashCardsLookup").Key("Value"))
+            .ValueExpr("Value")
+            .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.IsActive);
+
+        columns.AddFor(m => m.CreatedDate);
+
+        columns.AddFor(m => m.CostRef).Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi().Controller("ApiFnFicheLines").LoadAction("CostsLookup").Key("Value"))
+            .ValueExpr("Value")
+            .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.OrderRef).Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi().Controller("ApiFnFicheLines").LoadAction("OrderLinesLookup").Key("Value"))
+            .ValueExpr("Value")
+            .DisplayExpr("Text")
+        );
+    })
+    .Editing(e => e
+        .AllowAdding(true)
+        .AllowUpdating(true)
+        .AllowDeleting(true)
+    )
+)

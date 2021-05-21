@@ -1,0 +1,183 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    function onShowing(e) {
+        var btns = e.component.content().parent().find(".dx-button.dx-button-has-text");
+        for (var i = 0; i < btns.length; i++) {
+            var btn = btns[i];
+            $(btn).dxButton("option", "text", i == 0 ? "Kaydet" : "Vazgeç");
+        }
+    }
+</script>
+@(Html.DevExtreme().DataGrid<TredeWeb.DataLayer.FnFicheLines>
+    ()
+    .DataSource(ds => ds.Mvc()
+    .Controller("ApiFnFicheLines")
+    .LoadAction("Get")
+    .InsertAction("Post")
+    .UpdateAction("Put")
+    .DeleteAction("Delete")
+    .Key("Id")
+    )
+     .ShowBorders(true)
+            .ShowColumnLines(true)
+            .HighlightChanges(true)
+            .Paging(pagination => pagination
+                .Enabled(true)
+                .PageSize(5)
+            )
+            .RemoteOperations(true)
+            .Editing(e => e
+                .Mode(GridEditMode.Popup)
+                    .Popup(pop => pop
+                        .DragEnabled(false)
+                        .OnShowing("onShowing")
+                        .Position(PositionAlignment.Center)
+                        .Width(700)
+                        .Height(800)
+                        .Title("Şehir Formu").ShowTitle(true).ShowCloseButton(true).CloseOnOutsideClick(true)
+                        )
+                .Form(cnfg =>
+                {
+                    cnfg.Items(itm => itm
+                        .AddGroup()
+                        .ColCount(2)
+                        .ColSpan(2)
+                        .Caption("İlk grup")
+                        .Items(groupItems =>
+                        {
+                            groupItems.AddSimpleFor(m => m.Collect);
+                            groupItems.AddSimpleFor(m => m.ModifiedDate);
+                            groupItems.AddSimpleFor(m => m.ModifiedUser);
+                            groupItems.AddSimpleFor(m => m.LineNr);
+                            groupItems.AddSimpleFor(m => m.FinanceRef);
+                            groupItems.AddSimpleFor(m => m.Amount);
+                            groupItems.AddSimpleFor(m => m.Tax);
+                            groupItems.AddSimpleFor(m => m.VatBase);
+                            groupItems.AddSimpleFor(m => m.Total);
+                            groupItems.AddSimpleFor(m => m.BankRef);
+                            groupItems.AddSimpleFor(m => m.BarterRef);
+                            groupItems.AddSimpleFor(m => m.CsRef);
+                            groupItems.AddSimpleFor(m => m.CashRef);
+
+                        }));
+                    cnfg.Items(itm => itm
+                        .AddGroup()
+                        .ColCount(2)
+                        .ColSpan(2)
+                        .Caption("İkinci grup")
+                        .Items(groupItems =>
+                        {
+
+                            groupItems.AddSimpleFor(m => m.Total);
+                            groupItems.AddSimpleFor(m => m.BankRef);
+                            groupItems.AddSimpleFor(m => m.BarterRef);
+                            groupItems.AddSimpleFor(m => m.CreditCardRef);
+                            groupItems.AddSimpleFor(m => m.Sign);
+                            groupItems.AddSimpleFor(m => m.ModifiedDate);
+                            groupItems.AddSimpleFor(m => m.AccountRef);
+                            groupItems.AddSimpleFor(m => m.Cost);
+                            groupItems.AddSimpleFor(m => m.CardRef);
+                            groupItems.AddSimpleFor(m => m.IsActive);
+                            groupItems.AddSimpleFor(m => m.CreatedDate);
+                            groupItems.AddSimpleFor(m => m.CostRef);
+                            groupItems.AddSimpleFor(m => m.OrderLines);
+
+                        }));
+                    cnfg.ShowValidationSummary(true);
+                })
+                .UseIcons(true)
+                .ConfirmDelete(true)
+                .AllowAdding(true)
+                .AllowUpdating(true)
+                .AllowDeleting(true)
+            )
+    .Columns(columns => {
+
+        columns.AddFor(m => m.Collect).Caption("Toplamak");
+
+        columns.AddFor(m => m.ModifiedDate).Caption("Değiştirilme Tarihi");
+
+        columns.AddFor(m => m.ModifiedUser);
+
+        columns.AddFor(m => m.Currency).Caption("Değiştirilmiş Kullanıcı").Lookup(lookup => lookup
+        .DataSource(ds => ds.WebApi().Controller("ApiFnFicheLines").LoadAction("CurrenciesLookup").Key("Value"))
+        .ValueExpr("Value")
+        .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.LineNr).Caption("Satır No.");
+
+        columns.AddFor(m => m.FinanceRef).Caption("Finans Ref").Lookup(lookup => lookup
+        .DataSource(ds => ds.WebApi().Controller("ApiFnFicheLines").LoadAction("FnFichesLookup").Key("Value"))
+        .ValueExpr("Value")
+        .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.Amount).Caption("Miktar");
+
+        columns.AddFor(m => m.Tax).Caption("Vergi");
+
+        columns.AddFor(m => m.VatBase).Caption("Kazan Tabanı");
+
+        columns.AddFor(m => m.Total).Caption("Toplam");
+
+        columns.AddFor(m => m.BankRef).Caption("Banka Referansı").Lookup(lookup => lookup
+        .DataSource(ds => ds.WebApi().Controller("ApiFnFicheLines").LoadAction("FnBankLinesLookup").Key("Value"))
+        .ValueExpr("Value")
+        .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.BarterRef).Caption("Takas Referansı").Lookup(lookup => lookup
+        .DataSource(ds => ds.WebApi().Controller("ApiFnFicheLines").LoadAction("FnBarterLinesLookup").Key("Value"))
+        .ValueExpr("Value")
+        .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.CsRef).Caption("Cs Ref");
+
+        columns.AddFor(m => m.CashRef).Caption("Nakit Ref").Lookup(lookup => lookup
+        .DataSource(ds => ds.WebApi().Controller("ApiFnFicheLines").LoadAction("FnCashLinesLookup").Key("Value"))
+        .ValueExpr("Value")
+        .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.CreditCardRef).Caption("Kredi Kartı Referansı");
+
+        columns.AddFor(m => m.Sign).Caption("İşaret");
+
+        columns.AddFor(m => m.ModulEnr).Caption("Modül");
+
+        columns.AddFor(m => m.AccountRef).Caption("Hesap Referansı").Lookup(lookup => lookup
+        .DataSource(ds => ds.WebApi().Controller("ApiFnFicheLines").LoadAction("AccountsLookup").Key("Value"))
+        .ValueExpr("Value")
+        .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.Cost).Caption("Maliyet");
+
+        columns.AddFor(m => m.CardRef).Caption("Kart Referansı").Lookup(lookup => lookup
+        .DataSource(ds => ds.WebApi().Controller("ApiFnFicheLines").LoadAction("CashCardsLookup").Key("Value"))
+        .ValueExpr("Value")
+        .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.IsActive).Caption("Aktiif Mi");
+
+        columns.AddFor(m => m.CreatedDate).Caption("Oluşturma Tahiri");
+
+        columns.AddFor(m => m.CostRef).Caption("Maliyet Referansı").Lookup(lookup => lookup
+        .DataSource(ds => ds.WebApi().Controller("ApiFnFicheLines").LoadAction("CostsLookup").Key("Value"))
+        .ValueExpr("Value")
+        .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.OrderRef).Caption("Sipariş Referansı").Lookup(lookup => lookup
+        .DataSource(ds => ds.WebApi().Controller("ApiFnFicheLines").LoadAction("OrderLinesLookup").Key("Value"))
+        .ValueExpr("Value")
+        .DisplayExpr("Text")
+        );
+    }))

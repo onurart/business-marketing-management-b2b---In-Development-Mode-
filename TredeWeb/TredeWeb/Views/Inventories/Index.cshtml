@@ -1,0 +1,119 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script>
+    function onShowing(e) {
+        var btns = e.component.content().parent().find(".dx-button.dx-button-has-text");
+        for (var i = 0; i < btns.length; i++) {
+            var btn = btns[i];
+            $(btn).dxButton("option", "text", i == 0 ? "Kaydet" : "Vazgeç");
+        }
+    }
+</script>
+@(Html.DevExtreme().DataGrid<TredeWeb.DataLayer.Inventories>
+    ()
+    .DataSource(ds => ds.Mvc()
+    .Controller("ApiInventories")
+    .LoadAction("Get")
+    .InsertAction("Post")
+    .UpdateAction("Put")
+    .DeleteAction("Delete")
+    .Key("Id")
+    )
+     .ShowBorders(true)
+            .ShowColumnLines(true)
+            .HighlightChanges(true)
+            .Paging(pagination => pagination
+                .Enabled(true)
+                .PageSize(5)
+            )
+            .RemoteOperations(true)
+            .Editing(e => e
+                .Mode(GridEditMode.Popup)
+                    .Popup(pop => pop
+                        .DragEnabled(false)
+                        .OnShowing("onShowing")
+                        .Position(PositionAlignment.Center)
+                        .Width(700)
+                        .Height(800)
+                        .Title("Stoklar Formu").ShowTitle(true).ShowCloseButton(true).CloseOnOutsideClick(true)
+                        )
+                .Form(cnfg =>
+                {
+                    cnfg.Items(itm => itm
+                        .AddGroup()
+                        .ColCount(2)
+                        .ColSpan(2)
+                        .Caption("İlk grup")
+                        .Items(groupItems =>
+                        {
+                            groupItems.AddSimpleFor(m => m.FicheDate);
+                            groupItems.AddSimpleFor(m => m.FicheTotal);
+                            groupItems.AddSimpleFor(m => m.Number);
+                            groupItems.AddSimpleFor(m => m.OwnerRef);
+                            groupItems.AddSimpleFor(m => m.Section);
+                            groupItems.AddSimpleFor(m => m.Section);
+
+                        }));
+                    cnfg.Items(itm => itm
+                        .AddGroup()
+                        .ColCount(2)
+                        .ColSpan(2)
+                        .Caption("İkinci grup")
+                        .Items(groupItems =>
+                        {
+                            groupItems.AddSimpleFor(m => m.Specode);
+                            groupItems.AddSimpleFor(m => m.WorkPlace);
+                            groupItems.AddSimpleFor(m => m.IsActive);
+                            groupItems.AddSimpleFor(m => m.CreatedDate);
+                        }));
+                    cnfg.ShowValidationSummary(true);
+                })
+                .UseIcons(true)
+                .ConfirmDelete(true)
+                .AllowAdding(true)
+                .AllowUpdating(true)
+                .AllowDeleting(true)
+            )
+    .Columns(columns => {
+
+        columns.AddFor(m => m.FicheDate).Caption("Fiş Tarihi");
+
+        columns.AddFor(m => m.FicheTotal).Caption("Fiş Toplamı");
+
+        columns.AddFor(m => m.Number).Caption("Numara");
+
+        columns.AddFor(m => m.OwnerRef).Caption("Sahip").Lookup(lookup => lookup
+        .DataSource(ds => ds.WebApi().Controller("ApiInventories").LoadAction("UsersLookup").Key("Value"))
+        .ValueExpr("Value")
+        .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.Section).Caption("Bölüm").Lookup(lookup => lookup
+        .DataSource(ds => ds.WebApi().Controller("ApiInventories").LoadAction("SectionsLookup").Key("Value"))
+        .ValueExpr("Value")
+        .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.Specode).Caption("Spe kodu");
+
+        columns.AddFor(m => m.WareHouse).Caption("Depo").Lookup(lookup => lookup
+        .DataSource(ds => ds.WebApi().Controller("ApiInventories").LoadAction("WareHousesLookup").Key("Value"))
+        .ValueExpr("Value")
+        .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.WorkPlace).Caption("İş yeri").Lookup(lookup => lookup
+        .DataSource(ds => ds.WebApi().Controller("ApiInventories").LoadAction("WorkPlacesLookup").Key("Value"))
+        .ValueExpr("Value")
+        .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.IsActive).Caption("Aktif Mi");
+
+        columns.AddFor(m => m.CreatedDate).Caption("Oluşturma Tahiri");
+    })
+    )

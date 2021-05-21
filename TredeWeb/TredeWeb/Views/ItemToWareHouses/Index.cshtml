@@ -1,0 +1,76 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    function onShowing(e) {
+        var btns = e.component.content().parent().find(".dx-button.dx-button-has-text");
+        for (var i = 0; i < btns.length; i++) {
+            var btn = btns[i];
+            $(btn).dxButton("option", "text", i == 0 ? "Kaydet" : "Vazgeç");
+        }
+    }
+</script>
+@(Html.DevExtreme().DataGrid<TredeWeb.DataLayer.ItemToWareHouses>()
+    .DataSource(ds => ds.Mvc()
+        .Controller("ApiItemToWareHouses")
+        .LoadAction("Get")
+        .InsertAction("Post")
+        .UpdateAction("Put")
+        .DeleteAction("Delete")
+        .Key("ItemId", "WarehouseId")
+    )
+      .ShowBorders(true)
+            .ShowColumnLines(true)
+            .HighlightChanges(true)
+            .Paging(pagination => pagination
+                .Enabled(true)
+                .PageSize(5)
+            )
+            .RemoteOperations(true)
+            .Editing(e => e
+                .Mode(GridEditMode.Popup)
+                    .Popup(pop => pop
+                        .DragEnabled(false)
+                        .OnShowing("onShowing")
+                        .Position(PositionAlignment.Center)
+                        .Width(700)
+                        .Height(800)
+                        .Title("Depolara Öğe Formu").ShowTitle(true).ShowCloseButton(true).CloseOnOutsideClick(true)
+                        )
+                .Form(cnfg =>
+                {
+                    cnfg.Items(itm => itm
+                        .AddGroup()
+                        .ColCount(2)
+                        .ColSpan(2)
+                        .Caption("İlk grup")
+                        .Items(groupItems =>
+                        {
+                            groupItems.AddSimpleFor(m => m.ItemId);
+                            groupItems.AddSimpleFor(m => m.WarehouseId);
+
+                        }));
+                cnfg.ShowValidationSummary(true);
+                })
+                .UseIcons(true)
+                .ConfirmDelete(true)
+                .AllowAdding(true)
+                .AllowUpdating(true)
+                .AllowDeleting(true)
+            )
+    .Columns(columns => {
+
+        columns.AddFor(m => m.ItemId).Caption("Öğe Kimliği").Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi().Controller("ApiItemToWareHouses").LoadAction("ItemsLookup").Key("Value"))
+            .ValueExpr("Value")
+            .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.WarehouseId).Caption("Depo Kimliği").Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi().Controller("ApiItemToWareHouses").LoadAction("WareHousesLookup").Key("Value"))
+            .ValueExpr("Value")
+            .DisplayExpr("Text")
+        );
+    }))

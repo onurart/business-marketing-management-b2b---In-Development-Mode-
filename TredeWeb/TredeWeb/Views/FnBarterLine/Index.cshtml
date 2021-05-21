@@ -1,0 +1,65 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@(Html.DevExtreme().DataGrid<TredeWeb.DataLayer.FnBarterLines>()
+    .DataSource(ds => ds.Mvc()
+        .Controller("ApiFnBarterLine")
+        .LoadAction("Get")
+        .InsertAction("Post")
+        .UpdateAction("Put")
+        .DeleteAction("Delete")
+        .Key("Id")
+    )
+    .RemoteOperations(true)
+    .Columns(columns => {
+
+        columns.AddFor(m => m.FinanceLineRef).Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi().Controller("ApiFnBarterLine").LoadAction("FnFicheLinesLookup").Key("Value"))
+            .ValueExpr("Value")
+            .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.FicheRef).Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi().Controller("ApiFnBarterLine").LoadAction("FnBarterFichesLookup").Key("Value"))
+            .ValueExpr("Value")
+            .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.AccountRef).Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi().Controller("ApiFnBarterLine").LoadAction("AccountsLookup").Key("Value"))
+            .ValueExpr("Value")
+            .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.Currency).Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi().Controller("ApiFnBarterLine").LoadAction("CurrenciesLookup").Key("Value"))
+            .ValueExpr("Value")
+            .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.Description);
+
+        columns.AddFor(m => m.LineDate);
+
+        columns.AddFor(m => m.LineNr);
+
+        columns.AddFor(m => m.Sign);
+
+        columns.AddFor(m => m.Amount);
+
+        columns.AddFor(m => m.Type);
+
+        columns.AddFor(m => m.IsActive);
+
+        columns.AddFor(m => m.CreatedDate);
+    })
+    .Editing(e => e
+        .AllowAdding(true)
+        .AllowUpdating(true)
+        .AllowDeleting(true)
+    )
+)
+

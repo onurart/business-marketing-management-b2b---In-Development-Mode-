@@ -1,0 +1,130 @@
+﻿using AutoMapper;
+using System;
+using System.Linq;
+using TredeWeb.DataLayer;
+using TredeWeb.Models;
+
+namespace TredeWeb.Helpers
+{
+    public class AutoMapping : Profile
+    {
+        public AutoMapping()
+        {
+            CreateMap<Accounts, Account>();
+            CreateMap<Account, Accounts>();
+            CreateMap<Addresses, Address>();
+            CreateMap<Address, Addresses>();
+            CreateMap<BankAccounts, BankAccount>();
+            CreateMap<BankAccount, BankAccounts>();
+            CreateMap<BankBranches, BankBranche>();
+            CreateMap<BankBranche, BankBranches>();
+            CreateMap<BankCards, BankCard>();
+            CreateMap<BankCard, BankCards>();
+            CreateMap<Barcodes, Barcode>();
+            CreateMap<Barcode, Accounts>();
+            CreateMap<Campaigns, Campaign>();
+            CreateMap<Campaign, Campaigns>();
+            CreateMap<CampaignLines, CampaignLine>();
+            CreateMap<CampaignLine, CampaignLines>();
+            CreateMap<Campaigns, Campaign>();
+            CreateMap<Campaign, Campaigns>();
+            CreateMap<CampaignToAccounts, CampaignToAccount>();
+            CreateMap<CampaignToAccount, CampaignToAccounts>();
+            CreateMap<CampaignToItems, CampaignToItem>();
+            CreateMap<CampaignToItem, CampaignToItems>();
+            CreateMap<CashCards, CashCard>();
+            CreateMap<CashCard, CashCards>();
+            CreateMap<Categories, Categorie>();
+            CreateMap<Categorie, Categories>();
+            CreateMap<Cities, Citie>();
+            CreateMap<Citie, Cities>();
+            CreateMap<Costs, Cost>();
+            CreateMap<Cost, Costs>();
+            CreateMap<Countries, Countrie>();
+            CreateMap<Countrie, Countries>();
+            CreateMap<CouponCodes, CouponCode>();
+            CreateMap<CouponCode, CouponCodes>();
+            CreateMap<Currencies, Currencie>();
+            CreateMap<Currencie, Currencies>();
+            CreateMap<Departments, Departmen>();
+            CreateMap<Departmen, Departments>();
+            CreateMap<FnBankFiches, FnBankFich>();
+            CreateMap<FnBankFich, FnBankFiches>();
+
+            //CreateMap<FnBankLines, FnBankLines>();
+            //CreateMap<FnBankLines, FnBankLines>();
+            CreateMap<FnBarterFiches, FnBarterFich>();
+            CreateMap<FnBarterFich, FnBarterFiches>();
+            //CreateMap<FnBarterLines, FnBarterLine>();
+            //CreateMap<FnBarterLine, FnBarterLines>();
+            CreateMap<FnCashFiches, FnCashFiches>();
+            CreateMap<FnCashFiches, FnCashFiches>();
+            CreateMap<FnCashLines, FnCashLine>();
+            CreateMap<FnCashLine, FnCashLines>();
+            CreateMap<FnCreditCardFiches, FnCreditCardFiche>();
+            CreateMap<FnCreditCardFiche, FnCreditCardFiches>();
+            CreateMap<FnCreditCardLines, FnCreditCardLine>();
+            CreateMap<FnCreditCardLine, FnCreditCardLines>();
+            CreateMap<FnCsFiches, FnCsFiche>();
+            CreateMap<FnCsFiche, FnCsFiches>();
+            CreateMap<FnCsLines, FnCsLine>();
+            CreateMap<FnCsLine, FnCsLines>();
+            CreateMap<FnFicheLines, FnFicheLine>();
+            CreateMap<FnFicheLine, FnFicheLines>();
+            CreateMap<FnFiches, FnFiche>();
+            CreateMap<FnFiche, FnFiches>();
+            CreateMap<Inventories, Inventorie>();
+            CreateMap<Inventorie, Inventories>();
+            //CreateMap<InventoryLines, InventoryLine>(); // means you want to map from User to UserDTO
+            //CreateMap<Account, Accounts>(); // means you want to map from User to UserDTO
+            CreateMap<Items, Item>();
+            CreateMap<Item, Items>();
+            CreateMap<ItemToCategories, ItemToCategory>();
+            CreateMap<ItemToCategory, ItemToCategories>();
+            CreateMap<ItemToTags, ItemToTag>();
+            CreateMap<Account, Accounts>();
+            CreateMap<Accounts, Account>();
+            CreateMap<ItemToTag, ItemToTags>();
+            CreateMap<ItemToVariants, ItemToVariant>();
+            CreateMap<ItemToVariant, ItemToVariants>();
+            CreateMap<ItemToVariants, ItemToVariant>();
+            CreateMap<ItemToVariant, ItemToVariants>();
+            CreateMap<Logs, Log>();
+            CreateMap<Log, Logs>();
+            CreateMap<Marks, Mark>();
+            CreateMap<Mark, Marks>();
+            CreateMap<OrderLines, OrderLine>();
+            CreateMap<OrderLine, OrderLines>();
+            CreateMap<Orders, Order>();
+            CreateMap<Order, Orders>();
+            CreateMap<PaymentTypes, PaymentType>();
+            CreateMap<PaymentType, PaymentTypes>();
+            CreateMap<Pictures, Picture>();
+            CreateMap<Picture, Pictures>();
+            CreateMap<Positions, Position>();
+            CreateMap<Position, Positions>();
+            CreateMap<PriceLists, PriceList>();
+            CreateMap<PriceList, PriceLists>();
+            CreateMap<Roles, Role>();
+            CreateMap<Role, Roles>();
+            CreateMap<Sections, Section>();
+            CreateMap<Section, Sections>();
+            CreateMap<Towns, Town>();
+            CreateMap<Town, Towns>();
+            CreateMap<UnitLines, UnitLine>();
+            CreateMap<UnitLine, UnitLines>();
+            CreateMap<Units, Unit>();
+            CreateMap<Unit, Units>();
+            CreateMap<Users, User>();
+            CreateMap<User, Users>();
+            CreateMap<UserToRoles, UserToRole>();
+            CreateMap<UserToRole, UserToRoles>();
+            CreateMap<Variants, Variant>();
+            CreateMap<Variant, Variants>();
+            CreateMap<WareHouses, WareHouse>();
+            CreateMap<WareHouse, WareHouses>();
+            CreateMap<WorkPlaces, WorkPlace>();
+            CreateMap<WorkPlace, WorkPlaces>();
+        }
+    }
+}

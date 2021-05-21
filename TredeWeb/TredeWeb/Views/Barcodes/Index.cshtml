@@ -1,0 +1,99 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    function onShowing(e) {
+        var btns = e.component.content().parent().find(".dx-button.dx-button-has-text");
+        for (var i = 0; i < btns.length; i++) {
+            var btn = btns[i];
+            $(btn).dxButton("option", "text", i == 0 ? "Kaydet" : "Vazgeç");
+        }
+    }
+</script>
+@(Html.DevExtreme().DataGrid<TredeWeb.DataLayer.Barcodes>()
+    .DataSource(ds => ds.Mvc()
+        .Controller("ApiBarcodes1")
+        .LoadAction("Get")
+        .InsertAction("Post")
+        .UpdateAction("Put")
+        .DeleteAction("Delete")
+        .Key("Id")
+    )
+ .ShowBorders(true)
+            .ShowColumnLines(true)
+            .HighlightChanges(true)
+            .Paging(pagination => pagination
+                .Enabled(true)
+                .PageSize(5)
+            )
+            .RemoteOperations(true)
+            .Editing(e => e
+                .Mode(GridEditMode.Popup)
+                    .Popup(pop => pop
+                        .DragEnabled(false)
+                        .OnShowing("onShowing")
+                        .Position(PositionAlignment.Center)
+                        .Width(700)
+                        .Height(800)
+                        .Title("Barkod Formu").ShowTitle(true).ShowCloseButton(true).CloseOnOutsideClick(true)
+                        )
+                .Form(cnfg =>
+                {
+                    cnfg.Items(itm => itm
+                        .AddGroup()
+                        .ColCount(2)
+                        .ColSpan(2)
+                        .Caption("İlk grup")
+                        .Items(groupItems =>
+                        {
+                            groupItems.AddSimpleFor(m => m.PictureRef);
+                            groupItems.AddSimpleFor(m => m.ItemRef);
+                            groupItems.AddSimpleFor(m => m.OwnerRef);
+
+                        }));
+                    cnfg.Items(itm => itm
+                        .AddGroup()
+                        .ColCount(2)
+                        .ColSpan(2)
+                        .Caption("İkinci grup")
+                        .Items(groupItems =>
+                        {
+                            groupItems.AddSimpleFor(m => m.IsActive);
+                            groupItems.AddSimpleFor(m => m.CreatedDate);
+                        }));
+                    cnfg.ShowValidationSummary(true);
+                })
+                .UseIcons(true)
+                .ConfirmDelete(true)
+                .AllowAdding(true)
+                .AllowUpdating(true)
+                .AllowDeleting(true)
+            )
+    .Columns(columns => {
+
+        columns.AddFor(m => m.PictureRef).Caption("Fotoğraf").Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi().Controller("ApiBarcodes1").LoadAction("PicturesLookup").Key("Value"))
+            .ValueExpr("Value")
+            .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.ItemRef).Caption("Öğe Referansı").Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi().Controller("ApiBarcodes1").LoadAction("ItemsLookup").Key("Value"))
+            .ValueExpr("Value")
+            .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.OwnerRef).Caption("Sahip").Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi().Controller("ApiBarcodes1").LoadAction("UsersLookup").Key("Value"))
+            .ValueExpr("Value")
+            .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.IsActive).Caption("Aktiv mi");
+
+        columns.AddFor(m => m.CreatedDate).Caption("Oluşturma Tahiri");
+
+        // columns.AddFor(m => m.LotId);
+    }))

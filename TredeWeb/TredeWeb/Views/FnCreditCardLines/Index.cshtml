@@ -1,0 +1,75 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@(Html.DevExtreme().DataGrid<TredeWeb.DataLayer.FnCreditCardLines>()
+    .DataSource(ds => ds.Mvc()
+        .Controller("ApiFnCreditCardLines")
+        .LoadAction("Get")
+        .InsertAction("Post")
+        .UpdateAction("Put")
+        .DeleteAction("Delete")
+        .Key("Id")
+    )
+    .RemoteOperations(true)
+    .Columns(columns => {
+
+        columns.AddFor(m => m.FinanceLineRef).Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi().Controller("ApiFnCreditCardLines").LoadAction("FnFicheLinesLookup").Key("Value"))
+            .ValueExpr("Value")
+            .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.FicheRef).Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi().Controller("ApiFnCreditCardLines").LoadAction("FnCreditCardFichesLookup").Key("Value"))
+            .ValueExpr("Value")
+            .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.LineDate);
+
+        columns.AddFor(m => m.LineNr);
+
+        columns.AddFor(m => m.Sign);
+
+        columns.AddFor(m => m.Total);
+
+        columns.AddFor(m => m.Currency).Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi().Controller("ApiFnCreditCardLines").LoadAction("CurrenciesLookup").Key("Value"))
+            .ValueExpr("Value")
+            .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.Description);
+
+        columns.AddFor(m => m.AccountRef).Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi().Controller("ApiFnCreditCardLines").LoadAction("AccountsLookup").Key("Value"))
+            .ValueExpr("Value")
+            .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.CardNo);
+
+        columns.AddFor(m => m.PosNo);
+
+        columns.AddFor(m => m.IsActive);
+
+        columns.AddFor(m => m.CreatedDate);
+
+        columns.AddFor(m => m.Cost);
+
+        columns.AddFor(m => m.CostRef).Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi().Controller("ApiFnCreditCardLines").LoadAction("CostsLookup").Key("Value"))
+            .ValueExpr("Value")
+            .DisplayExpr("Text")
+        );
+    })
+    .Editing(e => e
+        .AllowAdding(true)
+        .AllowUpdating(true)
+        .AllowDeleting(true)
+    )
+)

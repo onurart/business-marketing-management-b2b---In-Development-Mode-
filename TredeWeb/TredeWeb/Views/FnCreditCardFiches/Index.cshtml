@@ -1,0 +1,54 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+@(Html.DevExtreme().DataGrid<TredeWeb.DataLayer.FnCreditCardFiches>()
+    .DataSource(ds => ds.Mvc()
+        .Controller("ApiFnCreditCardFiches1")
+        .LoadAction("Get")
+        .InsertAction("Post")
+        .UpdateAction("Put")
+        .DeleteAction("Delete")
+        .Key("Id")
+    )
+    .RemoteOperations(true)
+    .Columns(columns => {
+
+        columns.AddFor(m => m.FinanceRef).Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi().Controller("ApiFnCreditCardFiches1").LoadAction("FnFichesLookup").Key("Value"))
+            .ValueExpr("Value")
+            .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.ApproveDate);
+
+        columns.AddFor(m => m.IsApproved);
+
+        columns.AddFor(m => m.Number);
+
+        columns.AddFor(m => m.Owner).Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi().Controller("ApiFnCreditCardFiches1").LoadAction("UsersLookup").Key("Value"))
+            .ValueExpr("Value")
+            .DisplayExpr("Text")
+        );
+
+        columns.AddFor(m => m.FicheDate);
+
+        columns.AddFor(m => m.Type);
+
+        columns.AddFor(m => m.Order);
+
+        columns.AddFor(m => m.IsActive);
+
+        columns.AddFor(m => m.CreatedDate);
+    })
+    .Editing(e => e
+        .AllowAdding(true)
+        .AllowUpdating(true)
+        .AllowDeleting(true)
+    )
+)
